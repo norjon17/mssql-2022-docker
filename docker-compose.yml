@@ -16,7 +16,12 @@ services:
       - ./data:/var/opt/mssql
       - ./backups:/var/opt/mssql/backups
       - ./entrypoint.sh:/usr/config/entrypoint.sh
-    entrypoint: ['/bin/bash', '/usr/config/entrypoint.sh']
+    entrypoint:
+      [
+        '/bin/bash',
+        '-c',
+        "sed -i 's/\r$//' /usr/config/entrypoint.sh && exec /bin/bash /usr/config/entrypoint.sh"
+      ]
     healthcheck:
       test:
         [
