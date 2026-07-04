@@ -9,18 +9,17 @@ services:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD}
       - MSSQL_PID=${MSSQL_PID}
-      - PORT=${PORT}
       - APP_ADMIN_USER=${APP_ADMIN_USER}
       - APP_ADMIN_PASSWORD=${APP_ADMIN_PASSWORD}
     volumes:
-      - ./data:/var/opt/mssql
+      - mssql_data:/var/opt/mssql
       - ./backups:/var/opt/mssql/backups
       - ./entrypoint.sh:/usr/config/entrypoint.sh
     entrypoint:
       [
         '/bin/bash',
         '-c',
-        "sed -i 's/\r$//' /usr/config/entrypoint.sh && exec /bin/bash /usr/config/entrypoint.sh"
+        "cp /usr/config/entrypoint.sh /tmp/entrypoint.sh && sed -i 's/\r$//' /tmp/entrypoint.sh && exec /bin/bash /tmp/entrypoint.sh"
       ]
     healthcheck:
       test:
@@ -31,3 +30,6 @@ services:
       interval: 10s
       timeout: 3s
       retries: 10
+
+volumes:
+  mssql_data:
